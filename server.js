@@ -2,7 +2,10 @@ var express = require("express");
 var app = express();
 
 app.get('/', function(req, res) {
-   res.send('Hello World'); 
+   
+   var time = req.query.time;
+   
+   res.send('The time is ' + time); 
 });
 
 app.listen(process.env.PORT, function() {
