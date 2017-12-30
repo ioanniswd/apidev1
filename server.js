@@ -1,6 +1,7 @@
 "use strict";
 
 var express = require("express");
+var favicon = require('serve-favicon');
 var path = require('path');
 var app = express();
 var moment = require('moment');
@@ -9,6 +10,8 @@ app.set('port', (process.env.PORT || 5000));
 
 //app.use(express.static(path.join(__dirname + 'css')));
 app.use(express.static(__dirname + '/public'));
+
+app.use(favicon(path.join(__dirname,'public','images','favicon.ico')));
 
 app.get('/', function(req, res) {
   res.sendFile(path.join(__dirname + '/views/index.html'));
