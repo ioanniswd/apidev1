@@ -1,41 +1,58 @@
+"use strict";
+
 var express = require("express");
 var path = require('path');
 var app = express();
+var moment = require('moment');
 
 app.set('port', (process.env.PORT || 5000));
 
 //app.use(express.static(path.join(__dirname + 'css')));
 app.use(express.static(__dirname + '/public'));
 
-app.get('/', function(req,res) {
-	res.sendFile(path.join(__dirname + '/index.html'));
+app.get('/', function(req, res) {
+  res.sendFile(path.join(__dirname + '/views/index.html'));
 });
 
 
-app.get('/:time', function(req, res) {
+app.get('/timestamp/:time', function(req, res) {
 
-	var time = req.params.time;
-	var resDate;
+  // console.log('req.params:', req.params);
+  var time = req.params.time;
+  var resDate;
 
-	if(Number(time)) {
-		if(new Date(time*1000).getTime() > 0) {
-			resDate = {'unix': time, "natural": new Date(time*1000).toUTCString()};
-		}
+  if (time.match(/^\d{10}$/)) {
+		time = parseInt(time);
 
-	} else {
-		if(Date.parse(time)) {
-			var tempDate = new Date(time);
-			resDate = {'unix': tempDate.getTime()/1000, "natural": tempDate.toUTCString()};
+		// console.log('time:', time);
+		// console.log('moment(time):', moment(time));
+    res.send({
+      'unix': time,
+      "natural": moment(time * 1e3).format('dddd, MMMM Do YYYY, h:mm:ss a')
+    });
+  } else res.send('Invalid timestamp');
 
-		} else {
-			resDate = {"unix": null, "natural": null};
-		}
-	}
+});
 
-	res.send(resDate);
+app.get('/date/:date', function(req, res) {
+
+  // console.log('req.params.date:', req.params.date);
+	// console.log('full date:', req.params.date + ' 00:00:00 +0000');
+  var date = moment(req.params.date + ' 00:00:00 +0000');
+
+  // console.log('date:', date);
+  // console.log('typeof date:', typeof date);
+
+  if (date.isValid()) {
+
+    res.send({
+      'unix': date.unix(),
+      "natural": date.format('dddd, MMMM Do YYYY, h:mm:ss a')
+    });
+  } else res.send('Invalid Date');
 
 });
 
 app.listen(app.get('port'), function() {
-    console.log('Listening on port ', app.get('port'));
+  console.log('Listening on port ', app.get('port'));
 });
