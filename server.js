@@ -33,7 +33,10 @@ app.get('/timestamp/:time', function(req, res) {
       'unix': time,
       "natural": moment(time * 1e3).format('dddd, MMMM Do YYYY, h:mm:ss a')
     });
-  } else res.send('Invalid timestamp');
+  } else res.send({
+    'unix': null,
+    "natural": null
+  });
 
 });
 
@@ -52,7 +55,10 @@ app.get('/date/:date', function(req, res) {
       'unix': date.unix(),
       "natural": date.format('dddd, MMMM Do YYYY, h:mm:ss a')
     });
-  } else res.send('Invalid Date');
+  } else res.send({
+    'unix': null,
+    "natural": null
+  });
 
 });
 
